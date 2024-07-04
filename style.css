@@ -1,0 +1,186 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    list-style-type: none;
+    outline: none;
+    font-family: sans-serif;
+}
+
+html {
+    font-size: 62.5%; 
+}
+
+body {
+    background-color: #f5f5f5; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; 
+}
+
+/* Login Page Container */
+.login-page {
+    width: 100%;
+    max-width: 45rem; 
+    margin: 2rem;
+    padding: 2rem;
+    background: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
+    border-radius: 1rem; 
+    display: none;
+}
+
+.login-page-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+}
+
+.login-page-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.login-page-form input,
+.login-page-form button {
+    width: 100%;
+    max-width: 100%;
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 1.2rem;
+    border-radius: 0.5rem;
+    font-size: 1.6rem;
+    border: 0.1rem solid #ccc;
+}
+
+.form-login-input {
+    font-size: 1.6rem;
+    padding: 1.2rem 1.5rem;
+    border: 0.1rem solid #777;
+    border-radius: 0.5rem;
+}
+
+/* Buttons */
+.form-login-btn {
+    background-color: #4e03b1;
+    color: #fff;
+    border: 0.1rem solid #036bb1;
+    font-size: 1.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+
+.form-login-btn:hover,
+.form-signup-btn:hover {
+    background-color: #036bb1; /* Change on hover */
+    border-color: #4e03b1;
+}
+
+.form-signup-btn {
+    background-color: #dbe8ec;
+    color: #333;
+    width: 100%;
+    padding: 0.6rem ;
+    border: 0.2rem solid #dbe8ec;
+    font-size: 1.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.form-signup-btn:hover {
+    background-color: #c0d4da; /* Slightly darker on hover */
+}
+
+/* Forgot Password Link */
+.form-login-link {
+    font-size: 1.6rem;
+    color: #e72222;
+    margin: 1.2rem 0;
+}
+
+.form-login-link:hover {
+    color: #b51818; /* Darker red on hover */
+}
+
+/* Separator */
+.login-page-form span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    font-size: 1.8rem;
+    color: #888;
+    margin: 1rem 0;
+    position: relative;
+}
+
+.login-page-form span::before,
+.login-page-form span::after {
+    content: "";
+    flex: 1;
+    height: 0.1rem;
+    background-color: #ccc;
+}
+
+.login-page-form span::before {
+    margin-right: 1.5rem;
+}
+
+.login-page-form span::after {
+    margin-left: 1.5rem;
+}
+
+/* End of login page */
+/* Sign up page */
+.signup-page{
+    width: 100%;
+    max-width: 45rem; 
+    margin: 2rem;
+    padding: 2rem;
+    background: #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
+    border-radius: 1rem; 
+}
+.signup-page-content{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+}
+
+.signup-page-form input{
+    width: 100%;
+    max-width: 100%;
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 1.2rem;
+    border-radius: 0.5rem;
+    font-size: 1.6rem;
+    border: 0.1rem solid #ccc;
+}
+
+.signup-btn{
+    background-color: #036bb1;
+}
+
+
+/* End of sign up page */
+/* Responsive Design */
+@media (max-width: 600px) {
+    .login-page {
+        margin: 1rem;
+        padding: 1rem;
+    }
+
+    .login-page-form input,
+    .login-page-form button {
+        width: 100%;
+        padding: 1rem;
+    }
+}
