@@ -11,4 +11,3 @@ if ($con->connect_error) {
     error_log("Connection failed: " . $con->connect_error);
     die("Could not connect to MySQL");
 }
-?>
