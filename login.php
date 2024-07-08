@@ -1,6 +1,5 @@
 <?php
 include_once 'dbcon.php';
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = trim($_POST['email']);
     $password = trim($_POST['password']);
@@ -45,26 +44,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             header("Location: profile.php?q=0");
                             exit();
                         } else {
-                            header("Location: index.php?w=Error updating token");
+                            echo "<script>alert('Error updating token'); window.location.href = 'index.php';</script>";
                             exit();
                         }
                     } else {
-                        header("Location: index.php?w=Error preparing update statement");
+                        echo "<script>alert('Error preparing update statement'); window.location.href = 'index.php';</script>";
                         exit();
                     }
                 }
             } else {
-                header("Location: index.php?w=Invalid credentials");
+                echo "<script>alert('Invalid credentials'); window.location.href = 'index.php';</script>";
                 exit();
             }
         } else {
-            header("Location: index.php?w=Invalid credentials");
+            echo "<script>alert('Invalid credentials'); window.location.href = 'index.php';</script>";
             exit();
         }
 
         // $stmt->close();
     } else {
-        die('Error: Could not prepare statement');
+        echo "<script>alert('Error: Could not prepare statement');</script>";
+        exit();
     }
 }
 

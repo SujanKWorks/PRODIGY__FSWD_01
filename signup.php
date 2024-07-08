@@ -23,6 +23,7 @@
 
     <?php
     session_start();
+    
 
     // Include the database connection file
     include_once 'dbcon.php';

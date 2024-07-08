@@ -1,6 +1,7 @@
 <?php
 // Include the database connection file
 include_once 'dbcon.php';
+include_once("changepassword.php");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = trim($_POST['email']);
