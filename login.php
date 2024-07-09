@@ -1,72 +1,36 @@
 <?php
-include_once 'dbcon.php';
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = trim($_POST['email']);
-    $password = trim($_POST['password']);
+session_start();
+include_once 'dbcon.php'; // Include your database connection file
 
-    // Prepare and execute the SQL statement
-    if ($stmt = $con->prepare('SELECT id, password, token, token_expiry FROM users WHERE email = ?')) {
-        $stmt->bind_param('s', $email);
-        $stmt->execute();
-        $stmt->store_result();
+header('Content-Type: application/json');
 
-        if ($stmt->num_rows > 0) {
-            $stmt->bind_result($id, $hashed_password, $stored_token, $token_expiry);
-            $stmt->fetch();
+$request_body = file_get_contents('php://input');
+$data = json_decode($request_body, true);
 
-            // Verify password
-            if (password_verify($password, $hashed_password)) {
-                // Check if the token is valid and not expired
-                if ($stored_token && strtotime($token_expiry) > time()) {
-                    // Token is valid and not expired, log in user
-                    session_start();
-                    $_SESSION["name"] = 'sujan';
-                    $_SESSION["key"] = '1';
-                    $_SESSION["email"] = $email;
-                    $_SESSION["token"] = $stored_token;
-                    header("Location: profile.php?q=0");
-                    exit();
-                } else {
-                    // Generate a new token
-                    $new_token = bin2hex(random_bytes(32));
-                    $new_token_expiry = date("Y-m-d H:i:s", strtotime('+7 days'));
+$email = isset($data['email']) ? $data['email'] : '';
+$otp = isset($data['otp']) ? $data['otp'] : '';
+$password = isset($data['password']) ? $data['password'] : '';
 
-                    // Update the token and token expiry in the database
-                    if ($update_stmt = $con->prepare("UPDATE users SET token = ?, token_expiry = ? WHERE id = ?")) {
-                        $update_stmt->bind_param('ssi', $new_token, $new_token_expiry, $id);
-                        if ($update_stmt->execute()) {
-                            // Set session variables
-                            session_start();
-                            $_SESSION["name"] = 'sujan';
-                            $_SESSION["key"] = '1';
-                            $_SESSION["email"] = $email;
-                            $_SESSION["token"] = $new_token;
-                            header("Location: profile.php?q=0");
-                            exit();
-                        } else {
-                            echo "<script>alert('Error updating token'); window.location.href = 'index.php';</script>";
-                            exit();
-                        }
-                    } else {
-                        echo "<script>alert('Error preparing update statement'); window.location.href = 'index.php';</script>";
-                        exit();
-                    }
-                }
-            } else {
-                echo "<script>alert('Invalid credentials'); window.location.href = 'index.php';</script>";
-                exit();
-            }
-        } else {
-            echo "<script>alert('Invalid credentials'); window.location.href = 'index.php';</script>";
-            exit();
-        }
+if (!empty($_SESSION['otp']) && !empty($_SESSION['email']) && $_SESSION['otp'] == $otp && $_SESSION['email'] == $email) {
+    // Hash the new password before storing it
+    $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
-        // $stmt->close();
+    // Update the password in the database
+    $stmt = $conn->prepare("UPDATE users SET password=? WHERE email=?");
+    $stmt->bind_param("ss", $hashed_password, $email);
+
+    if ($stmt->execute()) {
+        unset($_SESSION['otp']);
+        unset($_SESSION['email']);
+        echo json_encode(['success' => true, 'message' => 'Password changed successfully']);
     } else {
-        echo "<script>alert('Error: Could not prepare statement');</script>";
-        exit();
+        echo json_encode(['success' => false, 'message' => 'Error updating password: ' . $stmt->error]);
     }
+
+    $stmt->close();
+} else {
+    echo json_encode(['success' => false, 'message' => 'Invalid OTP or email']);
 }
 
-$con->close();
+$conn->close();
 ?>

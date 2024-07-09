@@ -83,7 +83,7 @@
             if ($stmt->execute()) {
                 echo "User registered successfully.";
                 // Redirect to prevent form resubmission on refresh
-                header("Location: signup_success.php");
+                header("Location: index.php");
                 exit();
             } else {
                 echo "Failed to register user: " . $stmt->error;

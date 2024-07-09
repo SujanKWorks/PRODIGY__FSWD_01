@@ -1,30 +1,33 @@
-
 <?php
-include_once("changepassword.php");
+session_start();
+include_once 'dbcon.php'; // Include your database connection file
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+header('Content-Type: application/json');
+
+$request_body = file_get_contents('php://input');
+$data = json_decode($request_body, true);
+
+$email = $data['email'];
+
+if ($email) {
+    $otp = rand(100000, 999999);
+    $_SESSION['otp'] = $otp;
+    $_SESSION['email'] = $email;
+
+    $subject = 'Your OTP Code';
+    $message = 'Your OTP code is ' . $otp;
+    $headers = 'From: your-email@example.com';
+
+    if (mail($email, $subject, $message, $headers)) {
+        echo json_encode(['success' => true, 'message' => 'OTP sent successfully']);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Failed to send OTP']);
+    }
+} else {
+    echo json_encode(['success' => false, 'message' => 'Email is required']);
+}
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OTP verification</title>
-    <link rel="stylesheet" href="style.css">
-
-</head>
-<body>
-    <div class="otp-page">
-        <div class="otp-page-content">
-        <form action="verifyotp.php" class="otp-page-form" method="POST">
-    <input type="hidden" name="email" value="' . $email . '">
-    <input type="hidden" name="password" value="' . $_POST['password'] . '">
-    <input type="hidden" name="otp_expiry" value="' . $otp_expiry . '">
-    <input type="text" class="otp-form-input" name="otp" placeholder="Enter OTP" required>
-    <input type="submit" class="otp-form-btn" value="Verify OTP">
-  </form>
-        </div>
-    </div>
-</body>
-</html>
-<?php
-
