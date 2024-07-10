@@ -1,36 +1,51 @@
 <?php
 session_start();
-include_once 'dbcon.php'; // Include your database connection file
 
-header('Content-Type: application/json');
-
-$request_body = file_get_contents('php://input');
-$data = json_decode($request_body, true);
-
-$email = isset($data['email']) ? $data['email'] : '';
-$otp = isset($data['otp']) ? $data['otp'] : '';
-$password = isset($data['password']) ? $data['password'] : '';
-
-if (!empty($_SESSION['otp']) && !empty($_SESSION['email']) && $_SESSION['otp'] == $otp && $_SESSION['email'] == $email) {
-    // Hash the new password before storing it
-    $hashed_password = password_hash($password, PASSWORD_BCRYPT);
-
-    // Update the password in the database
-    $stmt = $conn->prepare("UPDATE users SET password=? WHERE email=?");
-    $stmt->bind_param("ss", $hashed_password, $email);
-
-    if ($stmt->execute()) {
-        unset($_SESSION['otp']);
-        unset($_SESSION['email']);
-        echo json_encode(['success' => true, 'message' => 'Password changed successfully']);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'Error updating password: ' . $stmt->error]);
-    }
-
-    $stmt->close();
-} else {
-    echo json_encode(['success' => false, 'message' => 'Invalid OTP or email']);
+// Logout any existing session
+if (isset($_SESSION["email"])) {
+    session_destroy();
+    session_start();
 }
 
-$conn->close();
+include_once 'dbcon.php';
+
+// Get input values
+$email = $_POST['email'];
+$password = $_POST['password'];
+
+// Validate inputs
+if (empty($email) || empty($password)) {
+    header("location:index.php?w=Invalid input");
+    exit;
+}
+
+// Sanitize the email input
+$email = $con->real_escape_string($email);
+
+// Construct the SQL query
+$sql = "SELECT username, password FROM users WHERE email = '$email'";
+$result = $con->query($sql);
+
+if ($result) {
+    if ($result->num_rows === 1) {
+        $row = $result->fetch_assoc();
+        $username = $row['username'];
+        $hashedPassword = $row['password'];
+        
+        // Verify the password
+        if (password_verify($password, $hashedPassword)) {
+            // Successful login: regenerate session ID and set session variables
+            session_regenerate_id(true);
+            $_SESSION["username"] = $username;
+            $_SESSION["email"] = $email; // Store email used for login
+            header("location:profile.php");
+            exit;
+        }
+    }
+}
+
+// Redirect on failure
+header("location:index.php?w=Wrong Email or Password");
+exit;
+
 ?>

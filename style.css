@@ -302,11 +302,8 @@ a {
     border: 0.1rem solid #ccc;
 }
 
-#verifyOtpBtn {
-    display: none;
-}
 
-.otp-btn {
+.otp-send-btn {
     background-color: #3703b1;
     color: #fff;
     border: 0.1rem solid #036bb1;
@@ -317,7 +314,7 @@ a {
 }
 
 
-.otp-btn:hover {
+.otp-send-btn:hover {
     background-color: #036bb1;
     border-color: #4e03b1;
 }
