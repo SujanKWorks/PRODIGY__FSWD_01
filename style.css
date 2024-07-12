@@ -246,7 +246,7 @@ a {
 button {
     width: 100%;
     padding: 1.2rem 1.5rem;
-    margin: 1.2rem;
+    margin: 0 1.2rem 1.2rem;
     border-radius: 0.5rem;
     font-size: 1.6rem;
     border: 0.1rem solid #ccc;
@@ -345,8 +345,7 @@ button {
     align-items: center;
 }
 
-.otp-page-form input,
-button {
+.otp-page-form input {
     width: 50%;
     padding: 1.2rem 1.5rem;
     margin-bottom: 1.2rem;
@@ -354,7 +353,6 @@ button {
     font-size: 1.6rem;
     border: 0.1rem solid #ccc;
 }
-
 
 .otp-send-btn {
     background-color: #3703b1;
@@ -365,7 +363,6 @@ button {
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
-
 
 .otp-send-btn:hover {
     background-color: #036bb1;
@@ -431,8 +428,6 @@ textarea {
     padding-top: 1rem;
 }
 
-
-
 .btn {
     background-color: #3703b1;
     color: #fff;
@@ -494,3 +489,40 @@ textarea {
 
 
 /* End of Pop Up */
+/* style.css */
+
+/* Additional CSS for password strength feedback and loader */
+.password-strength {
+    margin-top: 5px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+}
+
+.strong {
+    color: green;
+}
+
+.medium {
+    color: orange;
+}
+
+.weak {
+    color: red;
+}
+
+.loader {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left: 4px solid #333;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+    display: none; 
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

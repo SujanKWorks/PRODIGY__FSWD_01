@@ -1,6 +1,7 @@
 <?php
 // sendOtp.php
 
+include_once("dbcon.php"); // Include your database connection file
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validate input
     $data = json_decode(file_get_contents('php://input'), true);
@@ -11,25 +12,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $email = $data['email'];
 
-    // Generate OTP (assuming a 6-digit OTP)
+    // Prepare SQL statement to prevent SQL injection
+    $stmt = $con->prepare("SELECT id FROM users WHERE email = ?");
+    if ($stmt === false) {
+        echo json_encode(['success' => false, 'message' => 'Database error']);
+        exit;
+    }
+
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $stmt->store_result();
+
+    // Check if email exists
+    if ($stmt->num_rows === 0) {
+        echo json_encode(['success' => false, 'message' => 'Invalid email']);
+        $stmt->close();
+        $con->close();
+        exit;
+    }
+
+    $stmt->close();
+
+    // Generate OTP
     $otp = mt_rand(100000, 999999);
 
-    // Store OTP in session (for verification)
     session_start();
+    session_regenerate_id(true); // Regenerate session ID for security
     $_SESSION['otp'] = $otp;
 
-    // Example: Send OTP via email (you should implement your actual email sending logic here)
-    // Replace this with your email sending code
+    // Send email
     $to = $email;
     $subject = 'OTP for Password Reset';
     $message = 'Your OTP is: ' . $otp;
+    $headers = 'From: no-reply@example.com' . "\r\n" . // Add From header
+               'Reply-To: no-reply@example.com' . "\r\n" . // Add Reply-To header
+               'X-Mailer: PHP/' . phpversion();
 
-    // Example using PHP's mail function
-    if (mail($to, $subject, $message)) {
+    if (mail($to, $subject, $message, $headers)) {
         echo json_encode(['success' => true]);
     } else {
         echo json_encode(['success' => false, 'message' => 'Failed to send OTP']);
     }
+
+    $con->close();
 } else {
     echo json_encode(['success' => false, 'message' => 'Invalid request method']);
 }

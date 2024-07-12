@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verify OTP</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="signup-otp-page">
         <div class="signup-otp-page-content">
@@ -22,6 +24,19 @@
             <button class="btn" onclick="hidePopup()">Close</button>
         </div>
     </div>
-    <script src="scripts/script.js"></script>
+    <script>
+        function showPopup(message) {
+            const errorPopup = document.getElementById("error-popup");
+            const errorMessage = document.getElementById("error-message");
+
+            errorMessage.textContent = message;
+            errorPopup.style.display = "block";
+        }
+
+        function hidePopup() {
+            document.getElementById("error-popup").style.display = "none";
+        }
+    </script>
 </body>
+
 </html>

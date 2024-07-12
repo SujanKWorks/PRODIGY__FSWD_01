@@ -6,6 +6,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validate input
     if (!isset($_POST['email']) || empty($_POST['email']) || !isset($_POST['otp']) || empty($_POST['otp'])) {
         echo "<script>alert('Invalid request. Missing email or OTP parameter.');</script>";
+        header("Location:changepassword.php");
         exit;
     }
 
@@ -15,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($inputOtp != $storedOtp) {
         echo "<script>alert('Invalid OTP. Please try again.');</script>";
-        exit;
+        header("Location:changepassword.php");
     }
 
     // Clear OTP from session after successful verification
@@ -37,6 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location:index.php');
     } else {
         echo "<script>alert('Failed to update password. Please try again later.');</script>";
+        header('Location:changepassword.php');
     }
 
     // Close statement and connection

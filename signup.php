@@ -31,6 +31,7 @@
     <script src="scripts/password.js"></script>
 </body>
 </html>
+
 <?php
 session_start();
 include_once 'dbcon.php';
@@ -75,16 +76,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
     $otp = rand(100000, 999999); // Generate a 6-digit OTP
+    $otp_time = time(); // Store the current time
+    $otp_validity_duration = 5 * 60; // OTP validity duration in seconds (5 minutes)
 
     $_SESSION['temp_user'] = [
         'username' => $name,
         'email' => $email,
         'password' => $hashed_password,
-        'otp' => $otp
+        'otp' => $otp,
+        'otp_time' => $otp_time
     ];
 
     $subject = "Your OTP Code";
-    $message = "Your OTP code is: $otp";
+    $message = "Your OTP code is: $otp. This code is valid for the next 5 minutes.";
     $headers = "From: no-reply@example.com";
 
     if (mail($email, $subject, $message, $headers)) {
@@ -95,5 +99,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 }
+
 $con->close();
 ?>

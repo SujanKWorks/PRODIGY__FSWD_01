@@ -44,7 +44,7 @@ if ($stmt = $con->prepare($query)) {
     $stmt->close();
 } else {
     // Error handling example: show error message in popup
-    echo '<script>alert("Failed to fetch user data.")</script>';
+    echo '<script>showPopup("Failed to fetch user data.")</script>';
     exit;
 }
 
@@ -120,7 +120,7 @@ $address = $address ?? '';
     <div id="error-popup" class="popup">
         <div class="popup-content">
             <p id="error-message"></p>
-            <button class="logout-btn" onclick="hideErrorPopup()">Close</button>
+            <button class="logout-btn" onclick="hidePopup()">Close</button>
         </div>
     </div>
     <script src="scripts/script.js"></script>
