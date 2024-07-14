@@ -9,6 +9,7 @@
 </head>
 
 <body>
+    
     <div class="signup-otp-page">
         <div class="signup-otp-page-content">
             <h2>VERIFY OTP</h2>
@@ -18,25 +19,5 @@
             </form>
         </div>
     </div>
-    <div id="error-popup" class="popup">
-        <div class="popup-content">
-            <p id="error-message"></p>
-            <button class="btn" onclick="hidePopup()">Close</button>
-        </div>
-    </div>
-    <script>
-        function showPopup(message) {
-            const errorPopup = document.getElementById("error-popup");
-            const errorMessage = document.getElementById("error-message");
-
-            errorMessage.textContent = message;
-            errorPopup.style.display = "block";
-        }
-
-        function hidePopup() {
-            document.getElementById("error-popup").style.display = "none";
-        }
-    </script>
 </body>
-
 </html>

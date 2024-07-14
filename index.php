@@ -25,8 +25,27 @@
         </div>
     </div>
     <!-- End of Login page -->
-
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <p id="popup-message"></p>
+            <button class="btn" onclick="hidePopup()">Close</button>
+        </div>
+    </div>
 
 </body>
+<script>
+    
+function showPopup(message) {
+    const Popup = document.getElementById("popup");
+    const Message = document.getElementById("popup-message");
+
+    Message.textContent = message;
+    Popup.style.display = "flex";
+}
+
+function hidePopup() {
+    document.getElementById("popup").style.display = "none";
+}
+</script>
 
 </html>

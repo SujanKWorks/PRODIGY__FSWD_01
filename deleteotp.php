@@ -1,6 +1,7 @@
 <?php
-include_once("dbcon.php");
+session_start();
 
+include_once("dbcon.php");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validate input
@@ -35,15 +36,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Generate OTP
     $otp = mt_rand(100000, 999999);
 
-    session_start();
-    session_regenerate_id(true); // Regenerate session ID for security
-    $_SESSION['otp'] = $otp;
+    session_regenerate_id(true); 
+    $_SESSION['delotp'] = $otp;
 
-    // Send email
+    // Send email (consider using a more secure method)
     $to = $email;
-    $subject = 'OTP for Password Reset';
+    $subject = 'OTP for Account Deletion';
     $message = 'Your OTP is: ' . $otp;
-    $headers = 'From: no-reply@example.com' . "\r\n" . // Add From header
+    $headers = 'From: no-reply@example.com' . "\r\n" .
                'Reply-To: no-reply@example.com' . "\r\n" . 
                'X-Mailer: PHP/' . phpversion();
 
@@ -57,4 +57,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 } else {
     echo json_encode(['success' => false, 'message' => 'Invalid request method']);
 }
-?>

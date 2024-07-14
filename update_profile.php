@@ -45,8 +45,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->execute();
     }
     $stmt->close();
-
-    // Redirect back to the profile page
     header("Location: profile.php");
     exit();
 } else {

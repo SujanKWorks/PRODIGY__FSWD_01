@@ -8,6 +8,7 @@ if (isset($_SESSION["email"])) {
 }
 
 include_once 'dbcon.php';
+include_once 'index.php';
 
 // Get input values
 $email = $_POST['email'];
@@ -15,37 +16,35 @@ $password = $_POST['password'];
 
 // Validate inputs
 if (empty($email) || empty($password)) {
-    header("location:index.php?w=Invalid input");
+    header("location: index.php?w=Invalid input");
     exit;
 }
 
 // Sanitize the email input
 $email = $con->real_escape_string($email);
 
-// Construct the SQL query
-$sql = "SELECT username, password FROM users WHERE email = '$email'";
-$result = $con->query($sql);
+// Construct the SQL query using prepared statement
+$stmt = $con->prepare("SELECT username, password FROM users WHERE email = ?");
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$result = $stmt->get_result();
 
-if ($result) {
-    if ($result->num_rows === 1) {
-        $row = $result->fetch_assoc();
-        $username = $row['username'];
-        $hashedPassword = $row['password'];
+if ($result->num_rows === 1) {
+    $row = $result->fetch_assoc();
+    $username = $row['username'];
+    $hashedPassword = $row['password'];
+    
+    if (password_verify($password, $hashedPassword)) {
         
-        // Verify the password
-        if (password_verify($password, $hashedPassword)) {
-            // Successful login: regenerate session ID and set session variables
-            session_regenerate_id(true);
-            $_SESSION["username"] = $username;
-            $_SESSION["email"] = $email; // Store email used for login
-            header("location:profile.php");
-            exit;
-        }
-    }
-}
-
-// Redirect on failure
-header("location:index.php?w=Wrong Email or Password");
-exit;
+        session_regenerate_id(true);
+        $_SESSION["username"] = $username;
+        $_SESSION["email"] = $email; 
+        header("location: profile.php");
+        exit;
+    } 
+} 
+    echo "<script>
+        showPopup('Wrong Email or Password');
+        </script>";
 
 ?>

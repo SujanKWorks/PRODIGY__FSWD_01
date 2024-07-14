@@ -3,7 +3,7 @@ session_start();
 
 // Check if the user is logged in
 if (!isset($_SESSION['email'])) {
-    header("Location: index.php"); // Redirect to login page
+    header("Location: index.php"); 
     exit();
 }
 
@@ -104,7 +104,11 @@ $address = $address ?? '';
                     </div>
 
                 </form>
+                    <div class="account">
                 <button class="btn" onclick="showLogoutPopup()">Log Out</button>
+                <button class="btn" onclick="showDeletePopup()">Delete Account</button>
+                </div>
+                </form>
             </div>
         </div>
     </div>
@@ -117,15 +121,38 @@ $address = $address ?? '';
             </form>
         </div>
     </div>
-    <div id="error-popup" class="popup">
+    <div id="delete-popup" class="popup">
         <div class="popup-content">
-            <p id="error-message"></p>
-            <button class="logout-btn" onclick="hidePopup()">Close</button>
+            <p>Are you sure you want to Delete or Account?</p>
+            <form class="delete-form" action="delete.php" method="post">
+                <button class="btn" type="submit">Delete</button>
+                <button class="btn" type="button" onclick="hideDeletePopup()">Cancel</button>
+            </form>
         </div>
     </div>
-    <script src="scripts/script.js"></script>
-
-
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <p id="popup-message"></p>
+            <button class="btn" onclick="hidePopup()">Close</button>
+        </div>
+    </div>
 </body>
+<script>
+    
+function showLogoutPopup() {
+    document.getElementById("logout-popup").style.display = "block";
+}
 
+function hideLogoutPopup() {
+    document.getElementById("logout-popup").style.display = "none";
+}
+
+function showDeletePopup() {
+    document.getElementById("delete-popup").style.display = "block";
+}
+
+function hideDeletePopup() {
+    document.getElementById("delete-popup").style.display = "none";
+}
+</script>
 </html>

@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js"></script>
 </head>
 <body>
     <div class="signup-page">
@@ -13,43 +12,103 @@
             <form action="signup.php" class="signup-page-form" method="POST">
                 <input type="text" class="form-signup-input" name="username" placeholder="User Name" required>
                 <input type="email" class="form-signup-input" name="email" placeholder="Email" required>
-                <input type="password" class="form-signup-input" name="password" id="password" placeholder="Password" required>
-                <span class="password-strength" id="password-strength"></span>
-                <input type="submit" class="signup-btn" value="Sign Up">
+                <input type="password" class="form-signup-input" name="password" id="SpasswordInput" placeholder="Password" required>
+                <div class="password-strength" id="passwordStrength"></div>
+                <input type="submit" class="signup-btn" value="Sign Up" id="signup_Btn">
                 <span>or</span>
             </form>
             <button class="form-signup-btn signup" onclick="location.href='index.php';">Log In</button>
         </div>
     </div>
-    <div id="error-popup" class="popup">
-    <div class="popup-content">
-        <p id="error-message"></p>
-        <button class="btn" onclick="hidePopup()">Close</button>
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <p id="popup-message"></p>
+            <button class="btn" onclick="hidePopup()">Close</button>
+        </div>
     </div>
-</div>
-<script src="scripts/script.js"></script>
-    <script src="scripts/password.js"></script>
-</body>
-</html>
 
+</body>
+<script>
+    
+function showPopup(message, redirectUrl = null) {
+    const Popup = document.getElementById("popup");
+    const Message = document.getElementById("popup-message");
+
+    Message.textContent = message;
+    Popup.style.display = "flex";
+    
+    if (redirectUrl) {
+        setTimeout(function() {
+            window.location.href = redirectUrl;
+        }, 1500); 
+    }
+}
+
+function hidePopup() {
+    document.getElementById("popup").style.display = "none";
+}
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    const passwordInput = document.getElementById('SpasswordInput');
+    const signupBtn = document.getElementById('signup_Btn');
+    const passwordStrength = document.getElementById('passwordStrength');
+    
+    function validatePasswordStrength() {
+        const password = passwordInput.value;
+
+        const strongRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&.]{8,}$/;
+        const mediumRegex = /^(?=.*[a-zA-Z])(?=.*\d)[A-Za-z\d.]{8,}$/;
+
+
+        if (strongRegex.test(password)) {
+            passwordStrength.textContent = 'Strong';
+            passwordStrength.className = 'password-strength strong';
+            signupBtn.disabled = false; // Enable submit button
+            return true;
+        }else if (mediumRegex.test(password)) {
+            passwordStrength.textContent = 'Medium';
+            passwordStrength.className = 'password-strength medium';
+            signupBtn.disabled = true; // Disable submit button
+            return true;
+        }
+         else {
+            passwordStrength.textContent = 'Weak';
+            passwordStrength.className = 'password-strength weak';
+            signupBtn.disabled = true; // Disable submit button
+            return false;
+        }
+    }
+
+    signupBtn.addEventListener('click', function(event) {
+        if (!validatePasswordStrength()) {
+            event.preventDefault(); 
+            showPopup('Password must be at least 8 characters long and contain letters, numbers, and special characters.');
+            passwordStrength.textContent = '';
+        }
+    });
+
+
+    passwordInput.addEventListener('input', validatePasswordStrength);
+});
+</script>
+</html>
 <?php
 session_start();
-include_once 'dbcon.php';
+include_once 'dbcon.php'; 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = trim($_POST['username']);
     $email = trim($_POST['email']);
     $password = trim($_POST['password']);
 
-    if (empty($name) || empty($email) || empty($password)) {
-        echo "<script>showPopup('All fields are required.');</script>";
-        exit();
-    }
+
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         echo "<script>showPopup('Invalid email format.');</script>";
         exit();
     }
 
+    // Check if email is already registered
     if ($stmt = $con->prepare("SELECT id FROM users WHERE email = ?")) {
         $stmt->bind_param('s', $email);
         $stmt->execute();
@@ -62,6 +121,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->close();
     }
 
+    // Check if username is already taken
     if ($stmt = $con->prepare("SELECT id FROM users WHERE username = ?")) {
         $stmt->bind_param('s', $name);
         $stmt->execute();
@@ -74,11 +134,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->close();
     }
 
+    // Hash password
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+    // Generate OTP
     $otp = rand(100000, 999999); // Generate a 6-digit OTP
-    $otp_time = time(); // Store the current time
+    $otp_time = time(); // Current timestamp
     $otp_validity_duration = 5 * 60; // OTP validity duration in seconds (5 minutes)
 
+    // Store user data in session for OTP verification
     $_SESSION['temp_user'] = [
         'username' => $name,
         'email' => $email,
@@ -87,12 +151,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         'otp_time' => $otp_time
     ];
 
+    // Send OTP via email
     $subject = "Your OTP Code";
     $message = "Your OTP code is: $otp. This code is valid for the next 5 minutes.";
     $headers = "From: no-reply@example.com";
 
     if (mail($email, $subject, $message, $headers)) {
-        header("Location: signupotp.php");
+        echo "<script>showPopup('OTP is sent to your email', 'signupotp.php');</script>";
         exit();
     } else {
         echo "<script>showPopup('Failed to send OTP. Please try again.');</script>";

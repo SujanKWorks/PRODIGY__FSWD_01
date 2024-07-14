@@ -144,7 +144,7 @@ a {
 /* End of login page */
 /* Sign up page */
 
-
+.delete-account-page,
 .signup-page {
     width: 100%;
     max-width: 45rem;
@@ -154,7 +154,7 @@ a {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     border-radius: 1rem;
 }
-
+.delete-account-page-content,
 .signup-page-content {
     display: flex;
     flex-direction: column;
@@ -162,6 +162,7 @@ a {
     padding: 2rem;
 }
 
+.delete-account-form input,
 .signup-page-form input {
     width: 100%;
     max-width: 100%;
@@ -280,11 +281,20 @@ button {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     border-radius: 1rem;
 }
+.return{
+    display: flex;
+    align-items: center;
+}
 
 .arrow {
+    width: 10%;
     font-size: 4rem;
     display: flex;
     padding: 0 0 1rem 0;
+}
+.return h1{
+    margin-left: 20%;
+    cursor: default;
 }
 
 .change-password-page-content {
@@ -341,8 +351,6 @@ button {
 .otp-page {
     width: 100%;
     display: flex;
-    flex-direction: row;
-    align-items: center;
 }
 
 .otp-page-form input {
@@ -439,13 +447,12 @@ textarea {
 }
 
 
-.logout-btn:hover {
+.btn:hover {
     background-color: #036bb1;
     border-color: #4e03b1;
 }
 
 /* Profile Page End */
-
 
 /* Popup */
 .popup {
@@ -462,6 +469,7 @@ textarea {
 }
 
 .popup-content {
+    width: 100%;
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
@@ -471,27 +479,23 @@ textarea {
     padding: 2rem;
 }
 
-.logout-form {
+.account{
+    display: flex;
+    flex-direction: row;
+    
+}
+
+.logout-form ,
+.delete-form {
     display: flex;
     flex-direction: row;
     padding-top: 1rem;
 }
 
-.popup-content button {
-    width: 100%;
-    max-width: 100%;
-    padding: 1.2rem 1.5rem;
-    margin-bottom: 1.2rem;
-    border-radius: 0.5rem;
-    font-size: 1.6rem;
-    border: 0.1rem solid #ccc;
-}
-
-
 /* End of Pop Up */
-/* style.css */
 
-/* Additional CSS for password strength feedback and loader */
+
+/* Password Strength */
 .password-strength {
     margin-top: 5px;
     font-size: 1.5rem;
